@@ -9,28 +9,28 @@
     </div>
     <!-- Titulo -->
     <h1>Iniciar Sesión</h1>
-    
+
     <!-- Formulario -->
-    <form (ngSubmit)="onSubmit()">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
       <!-- Email -->
-        <ion-item>
-          <ion-input type="email" labelPlacement="stacked" label="Email" value="demo@domain.com">
-            <ion-icon slot="start" name="mail-outline" aria-hidden="true"></ion-icon>
-          </ion-input>
-        </ion-item>
+      <ion-item>
+        <ion-input type="email" labelPlacement="stacked" label="Email" formControlName="email">
+          <ion-icon slot="start" name="mail-outline" aria-hidden="true"></ion-icon>
+        </ion-input>
+      </ion-item>
 
       <!-- Password -->
       <ion-item>
-        <ion-input type="password" labelPlacement="stacked" label="Contraseña" value="demo123">
+        <ion-input type="password" labelPlacement="stacked" label="Contraseña" formControlName="password">
           <ion-icon slot="start" name="lock-closed-outline" aria-hidden="true"></ion-icon>
           <ion-input-password-toggle slot="end"></ion-input-password-toggle>
         </ion-input>
       </ion-item>
 
       <!-- Button -->
-       <ion-button expand="block" type="submit">
+      <ion-button expand="block" type="submit" [disabled]="form.invalid">
         Ingresar
-       </ion-button>
+      </ion-button>
     </form>
 
     <!-- Auth2 -->

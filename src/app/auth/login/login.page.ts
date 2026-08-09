@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 // prettier-ignore
-import {FormBuilder, FormGroup, FormsModule, Validators,} from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 // prettier-ignore
 import { IonButton, IonContent, IonIcon, IonImg, IonInput, IonItem, IonInputPasswordToggle, } from '@ionic/angular/standalone';
+import { AnalyticsService } from '../../services/analytic.service';
 
 @Component({
   selector: 'app-login',
@@ -12,12 +13,13 @@ import { IonButton, IonContent, IonIcon, IonImg, IonInput, IonItem, IonInputPass
   styleUrls: ['./login.page.scss'],
   standalone: true,
   // prettier-ignore
-  imports: [ IonButton, IonIcon, IonInput, IonItem, IonImg, IonContent, IonInputPasswordToggle, CommonModule, FormsModule ],
+  imports: [ IonButton, IonIcon, IonInput, IonItem, IonImg, IonContent, IonInputPasswordToggle, CommonModule, ReactiveFormsModule ],
 })
 export class LoginPage implements OnInit {
   // Inyección de dependencias
   private fb = inject(FormBuilder);
   private router = inject(Router);
+  private analyticsService = inject(AnalyticsService);
 
   // Formulario
   public form: FormGroup = this.fb.group({
@@ -29,17 +31,40 @@ export class LoginPage implements OnInit {
     // Check if user is already authenticated
   }
 
-  onSubmit() {
-    if (this.form.valid) {
-      // Aquí llamaría a su método de inicio de sesión de servicio de autores
-      // Para fines de prueba, solo navegaremos a las pestañas
+  onSubmit(): void {
+    // Evento 1: Login Started
+    this.analyticsService.track('Login Started', { method: 'email' });
+
+    if (this.form.invalid) {
+      const emailErrors = this.form.get('email')?.errors;
+      const passwordErrors = this.form.get('password')?.errors;
+
+      // Determina el motivo específico del fallo
+      let errorType = 'invalid_form';
+      if (passwordErrors?.['minlength']) {
+        errorType = 'password_too_short';
+      } else if (emailErrors?.['email']) {
+        errorType = 'invalid_email_format';
+      } else if (emailErrors?.['required'] || passwordErrors?.['required']) {
+        errorType = 'empty_fields';
+      }
+
+      // Evento 3: Login Failed
+      this.analyticsService.track('Login Failed', {
+        method: 'email',
+        error_type: errorType,
+      });
+
+      this.form.markAllAsTouched();
+      (document.activeElement as HTMLElement)?.blur();
+      return;
     }
+
+    // Evento 2: Login Completed
+    this.analyticsService.track('Login Completed', { method: 'email' });
+
     (document.activeElement as HTMLElement)?.blur();
     this.router.navigateByUrl('/tabs/home');
-  }
-
-  loginWithGoogle() {
-    // Servicio para auth con google
   }
 
   goToRegister() {
