@@ -1,0 +1,20 @@
+
+
+ion-content {
+  --background: var(--bg-item);
+    .app-info {
+      margin-top: 48px;
+      text-align: center;
+      color: var(--ion-color-medium);
+      
+      p {
+        margin: 4px 0;
+        font-size: 14px;
+      }
+    }
+  }
+  
+  // Estilo personalizada para modo oscuro
+:host-context(.ion-palette-dark) ion-content {
+  --background: var(--bg-item-dark);
+}

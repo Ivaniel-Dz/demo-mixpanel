@@ -1,0 +1,28 @@
+<!-- Header -->
+<app-header [title]="title" (back)="goBack()"/>
+<!-- Content -->
+<ion-content>
+  <!-- Main Container -->
+  <div class="main-container">
+    <!-- category content -->
+    <div class="category-items">
+      <!-- lista -->
+      <ion-list class="category-item" *ngFor="let category of categories()" (click)="goToFoodCategory(category.id)">
+        <!-- Imagen -->
+        <ion-thumbnail class="category-image">
+          <img
+            [src]="category.image || 'assets/placeholder/foods.webp'"
+            [alt]="category.name"
+            (error)="onImageError($event)"
+          />
+        </ion-thumbnail>
+        <!-- Información -->
+        <div class="category-info">
+          <h3>{{ category.name }}</h3>
+        </div>
+      </ion-list>
+
+    </div>
+
+  </div>
+</ion-content>

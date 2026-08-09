@@ -1,0 +1,50 @@
+<ion-content>
+  <div class="home-container">
+    <!-- Header -->
+    <div class="header">
+      <ion-text>
+        <h1>Delicious Delivery</h1>
+        <p>¿Qué te gustaría comer hoy?</p>
+      </ion-text>
+      <div class="cart-icon" (click)="goToCard()">
+        <ion-badge *ngIf="cartItemCount > 0"> {{ cartItemCount }} </ion-badge>
+        <ion-icon name="bag-handle"></ion-icon>
+      </div>
+    </div>
+
+    <!-- Banner -->
+    <div class="banner">
+      <app-banner/>
+    </div>
+
+    <!-- Categories -->
+    <div class="section">
+      <ion-text class="section-header">
+        <h2>Categorías</h2>
+        <a (click)="goToCategory()">
+          Ver todo 
+          <ion-icon name="chevron-forward"></ion-icon
+        ></a>
+      </ion-text>
+      <div class="categories-grid">
+        <app-card-category *ngFor="let category of categories()" [category]="category"/>
+      </div>
+    </div>
+
+    <!-- Popular content -->
+    <div class="section">
+      <div class="section-header">
+        <h2>Populares</h2>
+        <a (click)="goToPopularFood()"
+          >Ver todo <ion-icon name="chevron-forward"></ion-icon
+        ></a>
+      </div>
+      <!-- Popular items -->
+      <div class="food-items">
+        <!-- list item -->
+        <app-list-item *ngFor="let item of popularItems" [item]="item" />
+      </div>
+    </div>
+
+  </div>
+</ion-content>

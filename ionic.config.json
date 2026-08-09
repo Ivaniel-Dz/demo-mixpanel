@@ -1,0 +1,8 @@
+{
+  "name": "Frontend",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone",
+  "browser": ["edge"]
+}

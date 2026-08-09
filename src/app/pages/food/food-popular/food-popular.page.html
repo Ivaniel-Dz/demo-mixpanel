@@ -1,0 +1,13 @@
+<!-- Header -->
+<app-header [title]="title" (back)="goBack()"/>
+<!-- Content -->
+<ion-content>
+  <!-- Main Container -->
+  <div class="main-container">
+    <!-- lista de comidas -->
+    <div class="food-items">
+      <!-- list items -->
+      <app-list-item *ngFor="let item of popularItems" [item]="item" />
+    </div>
+  </div>
+</ion-content>

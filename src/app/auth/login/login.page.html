@@ -1,0 +1,52 @@
+<ion-content class="ion-padding">
+  <div class="login-container">
+    <!-- Logo -->
+    <div class="logo-container">
+      <ion-img class="logo-img"
+        src="assets/img/logo.webp"
+        alt="Restaurant Logo">
+      </ion-img>
+    </div>
+    <!-- Titulo -->
+    <h1>Iniciar Sesión</h1>
+    
+    <!-- Formulario -->
+    <form (ngSubmit)="onSubmit()">
+      <!-- Email -->
+        <ion-item>
+          <ion-input type="email" labelPlacement="stacked" label="Email" value="demo@domain.com">
+            <ion-icon slot="start" name="mail-outline" aria-hidden="true"></ion-icon>
+          </ion-input>
+        </ion-item>
+
+      <!-- Password -->
+      <ion-item>
+        <ion-input type="password" labelPlacement="stacked" label="Contraseña" value="demo123">
+          <ion-icon slot="start" name="lock-closed-outline" aria-hidden="true"></ion-icon>
+          <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+        </ion-input>
+      </ion-item>
+
+      <!-- Button -->
+       <ion-button expand="block" type="submit">
+        Ingresar
+       </ion-button>
+    </form>
+
+    <!-- Auth2 -->
+    <div class="social-login">
+      <p>O Inicia sesión con</p>
+      <ion-button class="btn-google" expand="block" fill="outline" [disabled]="true">
+        <ion-icon name="logo-google" slot="start"></ion-icon>
+        Google
+      </ion-button>
+    </div>
+
+    <!-- Redirige -->
+    <p class="register-link">
+      ¿No tienes una cuenta?
+      <a (click)="goToRegister()">Regístrate</a>
+    </p>
+
+  </div>
+</ion-content>
