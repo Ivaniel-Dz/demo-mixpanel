@@ -1,21 +1,21 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-// prettier-ignore
 import { IonBadge, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { UserService } from '../../../services/user.service';
+import { AnalyticsService } from '../../../services/analytic.service';
 
 @Component({
   selector: 'app-order-history',
   templateUrl: './order-history.page.html',
   styleUrls: ['./order-history.page.scss'],
   standalone: true,
-  // prettier-ignore
   imports: [ IonBadge, IonContent, IonTitle, IonIcon, IonButtons, IonButton, IonToolbar, IonHeader, CommonModule ],
 })
 export class OrderHistoryPage implements OnInit {
   private router = inject(Router);
   private userService = inject(UserService);
+  private analyticsService = inject(AnalyticsService);
 
   // Ejemplos fijos
   exampleOrders = [
@@ -71,8 +71,16 @@ export class OrderHistoryPage implements OnInit {
     this.orders = [...userOrders, ...this.exampleOrders];
   }
 
-  viewOrderDetails(order: any) {
+  viewOrderDetails(order: any): void {
     this.selectedOrder = order;
+
+    // Evento 14: Order Viewed
+    this.analyticsService.track('Order Viewed', {
+      order_id: order.id,
+      total: order.total,
+      status: order.status,
+      items_count: order.items?.length ?? 0,
+    });
   }
 
   closeOrderDetails() {
