@@ -1,11 +1,10 @@
 import { CommonModule } from '@angular/common';
-// prettier-ignore
-import { Component, inject, OnInit, signal, WritableSignal,} from '@angular/core';
+import { Component, inject, OnInit, signal, WritableSignal, } from '@angular/core';
 import { Router } from '@angular/router';
-// prettier-ignore
 import { IonContent, IonList, IonThumbnail } from '@ionic/angular/standalone';
 import { HeaderComponent } from '../../../components/header/header.component';
 import { Category } from '../../../interfaces/category';
+import { AnalyticsService } from '../../../services/analytic.service';
 import { FoodService } from '../../../services/food.service';
 
 @Component({
@@ -19,6 +18,8 @@ export class FoodCategoryPage implements OnInit {
   // Inyección de Dependencias
   private foodService = inject(FoodService);
   private router = inject(Router);
+  private analyticsService = inject(AnalyticsService);
+
   // Variables
   categories: WritableSignal<Category[]> = signal([]);
   title = 'Categorías';
@@ -28,22 +29,31 @@ export class FoodCategoryPage implements OnInit {
   }
 
   // Cargar todas las categorías
-  loadCategories() {
+  loadCategories(): void {
     this.foodService.getCategories().then((res) => this.categories.set(res));
   }
 
   // Ir a las comidas por categoría
-  goToFoodCategory(categoryId: number) {
+  goToFoodCategory(categoryId: number): void {
+    const category = this.categories().find((item) => item.id === categoryId);
+
+    // Evento 4: Category Selected
+    this.analyticsService.track('Category Selected', {
+      category_id: categoryId,
+      category_name: category?.name,
+    });
+
     (document.activeElement as HTMLElement)?.blur();
+
     this.router.navigate(['/tabs/food', categoryId]);
   }
 
-  // Método para carga los imágenes alternativas
-  onImageError(event: Event) {
+  // Método para cargar las imágenes alternativas
+  onImageError(event: Event): void {
     (event.target as HTMLImageElement).src = '/assets/placeholder/foods.webp';
   }
 
-  goBack() {
+  goBack(): void {
     (document.activeElement as HTMLElement)?.blur();
     this.router.navigate(['/tabs/home']);
   }
