@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { IonButton, IonIcon, IonList, IonThumbnail } from '@ionic/angular/standalone';
 import { Food } from '../../interfaces/food';
 import { CartService } from '../../services/cart.service';
+import { AnalyticsService } from '../../services/analytic.service';
 
 @Component({
   selector: 'app-list-item',
@@ -15,6 +16,7 @@ import { CartService } from '../../services/cart.service';
 export class ListItemComponent {
   private router = inject(Router);
   private cartService = inject(CartService);
+  private analyticsService = inject(AnalyticsService);
   @Input() item!: Food;
 
   // Ir a Detalles de la comida
@@ -24,10 +26,20 @@ export class ListItemComponent {
   }
 
   // Agregar producto al carrito
-  addCartItem(food: Food) {
+  addCartItem(food: Food): void {
     this.cartService.addFoodItem(food);
-    
+
+    // Evento 8: Product Added
+    this.analyticsService.track('Product Added', {
+      food_id: food.id,
+      food_name: food.name,
+      price: food.price,
+      quantity: 1,
+      category_id: food.categoryId,
+    });
+
     (document.activeElement as HTMLElement)?.blur();
+
     this.router.navigate(['/tabs/cart']);
   }
 

@@ -88,25 +88,34 @@ export class FoodDetailPage implements OnInit {
 
   // Agregar producto al carrito
   addCartItem(): void {
-    if (this.foodData) {
-      this.cartService.addToCart({
-        id: this.foodData.id,
-        name: this.foodData.name,
-        price: this.foodData.price,
-        quantity: this.quantity,
-        image: this.foodData.image,
-      });
+    if (!this.foodData) {
+      return;
     }
 
-    // Show toast or notification
+    this.cartService.addToCart({
+      id: this.foodData.id,
+      name: this.foodData.name,
+      price: this.foodData.price,
+      quantity: this.quantity,
+      image: this.foodData.image,
+    });
+
+    // Evento 8: Product Added
+    this.analyticsService.track('Product Added', {
+      food_id: this.foodData.id,
+      food_name: this.foodData.name,
+      price: this.foodData.price,
+      quantity: this.quantity,
+      category_id: this.foodData.categoryId,
+    });
+
     console.log(
       'Added to cart:',
-      this.foodData?.name,
+      this.foodData.name,
       'Quantity:',
       this.quantity,
     );
 
-    // Redirige al carrito
     (document.activeElement as HTMLElement)?.blur();
     this.router.navigate(['/tabs/cart']);
   }
