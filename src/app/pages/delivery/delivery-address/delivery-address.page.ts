@@ -1,17 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-// prettier-ignore
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-// prettier-ignore
 import { IonInput ,IonBadge, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonItem, IonLabel, IonTitle, IonToolbar, IonCheckbox, AlertController, ToastController } from '@ionic/angular/standalone';
+import { AnalyticsService } from '../../../services/analytic.service';
 
 @Component({
   selector: 'app-delivery-address',
   templateUrl: './delivery-address.page.html',
   styleUrls: ['./delivery-address.page.scss'],
   standalone: true,
-  // prettier-ignore
   imports: [ IonInput, IonLabel, IonItem, IonContent, IonBadge, IonTitle, IonIcon, IonButton, IonButtons, IonToolbar, IonHeader, IonCheckbox, CommonModule, FormsModule, ReactiveFormsModule ],
 })
 export class DeliveryAddressPage implements OnInit {
@@ -19,13 +17,14 @@ export class DeliveryAddressPage implements OnInit {
   private router = inject(Router);
   private alertController = inject(AlertController);
   private toastController = inject(ToastController);
+  private analyticsService = inject(AnalyticsService);
 
   addresses = [
     {
       id: 1,
       name: 'Casa',
       address: 'Calle Principal 123',
-      city: 'Ciudad de México',
+      city: 'Ciudad de Panamá',
       zipCode: '01000',
       isDefault: true,
     },
@@ -33,7 +32,7 @@ export class DeliveryAddressPage implements OnInit {
       id: 2,
       name: 'Trabajo',
       address: 'Av. Reforma 456',
-      city: 'Ciudad de México',
+      city: 'Costa del Este',
       zipCode: '06500',
       isDefault: false,
     },
@@ -116,21 +115,32 @@ export class DeliveryAddressPage implements OnInit {
 
       if (this.editingAddressId) {
         const index = this.addresses.findIndex(
-          (a) => a.id === this.editingAddressId
+          (a) => a.id === this.editingAddressId,
         );
+
         if (index !== -1) {
           this.addresses[index] = {
             ...this.addresses[index],
             ...formValue,
           };
         }
+
         this.presentToast('Dirección actualizada correctamente');
       } else {
         const newId = Math.max(0, ...this.addresses.map((a) => a.id)) + 1;
+
         this.addresses.push({
           id: newId,
           ...formValue,
         });
+
+        // Evento 13: Delivery Address Added
+        this.analyticsService.track('Delivery Address Added', {
+          address_type: formValue.name,
+          city: formValue.city,
+          is_default: formValue.isDefault,
+        });
+
         this.presentToast('Dirección agregada correctamente');
       }
 
