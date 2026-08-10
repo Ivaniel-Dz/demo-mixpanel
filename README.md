@@ -23,20 +23,20 @@ Ningún SDK de cliente está diseñado ni recomendado para enviar datos biométr
 - [Protección de datos de usuario](https://docs.mixpanel.com/docs/privacy/protecting-user-data)
 
 ### Tabla de eventos del Demo
-| #  | Componente / funcionalidad | Evento Mixpanel          | Cuándo se dispara                  | Propiedades principales                     |
-| -- | -------------------------- | ------------------------ | ---------------------------------- | ------------------------------------------- |
-| 1  | **Login**                  | `Login Started`          | Usuario inicia el proceso de login | `method`                                    |
-| 2  | **Login**                  | `Login Completed`        | Login exitoso                      | `method`, `user_id`                         |
-| 3  | **Login**                  | `Login Failed`           | Login rechazado                    | `method`, `error_type`                      |
-| 4  | **Explorar comidas**       | `Category Selected`      | Usuario selecciona una categoría   | `category`                                  |
-| 5  | **Explorar comidas**       | `Food Viewed`            | Usuario abre/detalla una comida    | `food_id`, `food_name`, `category`          |
-| 6  | **Búsqueda**               | `Food Searched`          | Usuario realiza una búsqueda       | `search_term`                               |
-| 7  | **Búsqueda**               | `Search Filter Applied`  | Usuario aplica filtro              | `filter_type`, `filter_value`               |
-| 8  | **Carrito**                | `Product Added`          | Agrega comida al carrito           | `food_id`, `food_name`, `price`, `quantity` |
-| 9  | **Carrito**                | `Product Removed`        | Elimina comida del carrito         | `food_id`, `food_name`, `price`             |
-| 10 | **Carrito**                | `Cart Viewed`            | Abre el carrito                    | `item_count`, `cart_value`                  |
-| 11 | **Checkout**               | `Checkout Started`       | Comienza checkout                  | `item_count`, `cart_value`                  |
-| 12 | **Checkout**               | `Checkout Completed`     | Finaliza checkout                  | `item_count`, `total_value`                 |
-| 13 | **Dirección**              | `Delivery Address Added` | Guarda/confirma dirección          | `city`, `country`                           |
-| 14 | **Historial**              | `Order Viewed`           | Abre un pedido del historial       | `order_id`, `order_status`                  |
-| 15 | **Usuario**                | `Profile Updated`        | Modifica información del perfil    | `updated_fields`                            |
+| #  | Componente / funcionalidad | Evento Mixpanel          | Cuándo se dispara                  | Propiedades principales                     | Componente (UI)    |
+| -- | -------------------------- | ------------------------ | ---------------------------------- | -------------------------------------------- | ------------------- |
+| 1  | **Login**                  | `Login Started`          | Usuario inicia el proceso de login | `method`                                    | Login               |
+| 2  | **Login**                  | `Login Completed`        | Login exitoso                      | `method`, `user_id`                         | Login               |
+| 3  | **Login**                  | `Login Failed`           | Login rechazado                    | `method`, `error_type`                      | Login               |
+| 4  | **Explorar comidas**       | `Category Selected`      | Usuario selecciona una categoría   | `category`                                  | Categorías/Home     |
+| 5  | **Explorar comidas**       | `Food Viewed`            | Usuario abre/detalla una comida    | `food_id`, `food_name`, `category`          | Detalle/Home        |
+| 6  | **Búsqueda**               | `Food Searched`          | Usuario realiza una búsqueda       | `search_term`                               | Search              |
+| 7  | **Búsqueda**               | `Search Filter Applied`  | Usuario aplica filtro              | `filter_type`, `filter_value`               | Search              |
+| 8  | **Carrito**                | `Product Added`          | Agrega comida al carrito           | `food_id`, `food_name`, `price`, `quantity` | List Item/Detalle   |
+| 9  | **Carrito**                | `Product Removed`        | Elimina comida del carrito         | `food_id`, `food_name`, `price`             | Cart                |
+| 10 | **Carrito**                | `Cart Viewed`            | Abre el carrito                    | `item_count`, `cart_value`                  | Cart                |
+| 11 | **Checkout**               | `Checkout Started`       | Comienza checkout                  | `item_count`, `cart_value`                  | Checkout            |
+| 12 | **Checkout**               | `Checkout Completed`     | Finaliza checkout                  | `item_count`, `total_value`                 | Checkout            |
+| 13 | **Dirección**              | `Delivery Address Added` | Guarda/confirma dirección          | `city`, `country`                           | Delivery Address    |
+| 14 | **Historial**              | `Order Viewed`           | Abre un pedido del historial       | `order_id`, `order_status`                  | Order History       |
+| 15 | **Usuario**                | `Profile Updated`        | Modifica información de perfil     | `updated_fields`                            | Profile Edit        |
