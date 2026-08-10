@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-// prettier-ignore 
+// prettier-ignore
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
@@ -9,6 +9,7 @@ import { IonButton, IonInput, IonContent, IonIcon, IonItem, IonLabel, IonSpinner
 import { HeaderComponent } from '../../../components/header/header.component';
 import { User } from '../../../interfaces/user';
 import { UserService } from '../../../services/user.service';
+import { AnalyticsService } from '../../../services/analytic.service';
 
 @Component({
   selector: 'app-profile-edit',
@@ -22,6 +23,7 @@ export class ProfileEditPage implements OnInit {
   // Inyección de dependencias
   private router = inject(Router);
   private userService = inject(UserService);
+  private analyticsService = inject(AnalyticsService);
   // Dependencias de Ionic
   private actionSheetController = inject(ActionSheetController);
   private toastController = inject(ToastController);
@@ -104,15 +106,31 @@ export class ProfileEditPage implements OnInit {
   }
 
   // Método para guardar los cambios
-  async saveProfile() {
-    if (this.form.valid) {
-      this.presentToast('Datos actualizada correctamente');
-      this.isLoading = true;
-      const userData: User = { ...this.form.value, picture: this.profileImage };
-      await this.userService.saveUser(userData);
-      this.isLoading = false;
-      this.goBack();
+  async saveProfile(): Promise<void> {
+    if (!this.form.valid) {
+      return;
     }
+
+    this.isLoading = true;
+
+    const userData: User = {
+      ...this.form.value,
+      picture: this.profileImage,
+    };
+
+    await this.userService.saveUser(userData);
+
+    // Evento 15: Profile Updated
+    this.analyticsService.track('Profile Updated', {
+      has_profile_picture:
+        this.profileImage !== 'assets/placeholder/avatar.svg',
+    });
+
+    this.isLoading = false;
+
+    await this.presentToast('Datos actualizados correctamente');
+
+    this.goBack();
   }
 
   async presentToast(message: string) {
