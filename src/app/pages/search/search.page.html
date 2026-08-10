@@ -11,6 +11,7 @@
       <ion-searchbar
         [value]="searchQuery"
         (ionInput)="onSearch($event)"
+        (ionChange)="onSearchConfirmed($event)"
         placeholder="Buscar comidas, bebidas..."
         showCancelButton="never"
         animated

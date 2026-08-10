@@ -2,9 +2,11 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+
 // prettier-ignore
 import { IonButton, IonContent, IonHeader, IonInfiniteScroll, IonList, IonSearchbar, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { Food } from '../../interfaces/food';
+import { AnalyticsService } from '../../services/analytic.service';
 import { SearchService } from '../../services/search.service';
 
 @Component({
@@ -19,10 +21,13 @@ export class SearchPage {
   // Inyección de dependencias
   private router = inject(Router);
   private searchService = inject(SearchService);
+  private analyticsService = inject(AnalyticsService);
+
   // Variables
   searchQuery = '';
   activeFilter = 'all';
   searchResults: Food[] = [];
+
   filters = [
     { id: 'all', name: 'Todos' },
     { id: '1', name: 'Hamburguesas' },
@@ -33,47 +38,83 @@ export class SearchPage {
     { id: '6', name: 'Bebidas' },
   ];
 
-  async onSearch(event: any) {
+  // Ejecuta la búsqueda mientras el usuario escribe
+  async onSearch(event: any): Promise<void> {
     this.searchQuery = event.target.value;
     await this.performSearch();
   }
 
-  clearSearch() {
+  // Registra la búsqueda confirmada
+  onSearchConfirmed(event: any): void {
+    const query = event.detail.value?.trim();
+
+    if (!query) {
+      return;
+    }
+
+    // Evento 6: Food Searched
+    this.analyticsService.track('Food Searched', {
+      search_term: query,
+    });
+  }
+
+  // Limpiar búsqueda
+  clearSearch(): void {
     this.searchQuery = '';
     this.searchResults = [];
   }
 
-  async setFilter(filterId: string) {
+  // Aplicar filtro
+  async setFilter(filterId: string): Promise<void> {
     this.activeFilter = filterId;
+
+    // Evento 7: Search Filter Applied
+    const selectedFilter = this.filters.find(
+      (filter) => filter.id === filterId,
+    );
+
+    this.analyticsService.track('Search Filter Applied', {
+      filter_type: 'category',
+      filter_id: filterId,
+      filter_name: selectedFilter?.name,
+    });
+
     if (this.searchQuery.trim() !== '') {
       await this.performSearch();
     }
   }
 
-  async performSearch() {
-    if (this.searchQuery.trim() === '') {
+  // Ejecutar búsqueda
+  async performSearch(): Promise<void> {
+    const query = this.searchQuery.trim();
+
+    if (query === '') {
       this.searchResults = [];
       return;
     }
 
-    const results = await this.searchService.searchFoods(this.searchQuery);
+    const results = await this.searchService.searchFoods(query);
+
     if (this.activeFilter === 'all') {
       this.searchResults = results;
     } else {
       this.searchResults = results.filter(
-        (item) => item.categoryId.toString() === this.activeFilter
+        (item) =>
+          item.categoryId.toString() === this.activeFilter,
       );
     }
   }
 
-  // Redirige a Detalles
-  goToFoodDetail(id: number) {
+  // Redirige a detalles
+  goToFoodDetail(id: number): void {
     (document.activeElement as HTMLElement)?.blur();
+
     this.router.navigate(['/tabs/food/detail', id]);
   }
 
-  // Método para carga los imágenes alternativas
-  onImageError(event: Event) {
-    (event.target as HTMLImageElement).src = '/assets/placeholder/foods.webp';
+  // Método para cargar las imágenes alternativas
+  onImageError(event: Event): void {
+    (event.target as HTMLImageElement).src =
+      '/assets/placeholder/foods.webp';
   }
 }
